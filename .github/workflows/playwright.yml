@@ -5,46 +5,63 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-defaults:
-  run:
-    working-directory: qa-playwright-ts
-
 jobs:
   test:
     name: Tests (shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
-    runs-on: [self-hosted, Windows, X64]    timeout-minutes: 30
+    runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: qa-playwright-ts
+
     strategy:
       fail-fast: false
       matrix:
         shardIndex: [1, 2, 3, 4]
         shardTotal: [4]
+
+    env:
+      BASE_URL: ${{ vars.BASE_URL || 'https://practicesoftwaretesting.com' }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: qa-playwright-ts/package-lock.json
+
       - name: Install dependencies
         run: npm ci
+
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
+
       - name: Run Playwright tests
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+
       - name: Upload blob report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: blob-report-${{ matrix.shardIndex }}
-          path: qa-playwright-ts/blob-report
+          path: qa-playwright-ts/blob-report/
           retention-days: 1
+          if-no-files-found: warn
+
       - name: Upload traces and JUnit
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -54,37 +71,58 @@ jobs:
             qa-playwright-ts/test-results/
             qa-playwright-ts/reports/
           retention-days: 14
+          if-no-files-found: warn
 
   merge-reports:
     name: Merge reports
     if: ${{ !cancelled() }}
     needs: [test]
     runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: qa-playwright-ts
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: qa-playwright-ts/package-lock.json
-      - run: npm ci
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Download blob reports
         uses: actions/download-artifact@v4
         with:
           path: qa-playwright-ts/all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
-      - name: Merge into HTML + JUnit
+
+      - name: Merge into HTML and JUnit
         run: npx playwright merge-reports --config merge.config.ts ./all-blob-reports
+
       - name: Upload HTML report
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: qa-playwright-ts/playwright-report
+          path: qa-playwright-ts/playwright-report/
           retention-days: 14
+          if-no-files-found: warn
+
       - name: Upload merged JUnit
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: junit-report
           path: qa-playwright-ts/reports/junit-merged.xml
           retention-days: 14
+          if-no-files-found: warn
