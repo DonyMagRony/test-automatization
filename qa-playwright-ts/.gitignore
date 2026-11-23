@@ -4,3 +4,8 @@ playwright-report/
 blob-report/
 playwright/.cache/
 .env
+
+.env
+reports/
+all-blob-reports/
+.act-artifacts
