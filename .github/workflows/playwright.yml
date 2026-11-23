@@ -34,6 +34,18 @@ jobs:
         run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+      - name: Check target application
+        run: |
+          echo "BASE_URL: $BASE_URL"
+          echo "Checking application..."
+
+          curl -IL --max-time 20 "$BASE_URL"
+
+          echo "Checking response body..."
+          curl -Ls --max-time 20 "$BASE_URL" | head -c 1000
+        env:
+          BASE_URL: ${{ vars.BASE_URL }}
+
       - name: Run Playwright tests
         run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         env:
