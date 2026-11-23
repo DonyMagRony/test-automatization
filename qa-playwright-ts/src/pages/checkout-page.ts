@@ -52,12 +52,11 @@ export class CheckoutPage extends BasePage {
    * 1st "Check payment" validates the payment, 2nd "Confirm" places the order.
    */
   async payWithBuyNowPayLater(monthlyInstallments = '3'): Promise<void> {
-    await this.paymentMethod.selectOption('buy-now-pay-later');
-    await this.installments.selectOption(monthlyInstallments);
+      await this.paymentMethod.selectOption('buy-now-pay-later');
+      await this.installments.selectOption(monthlyInstallments);
 
-    await this.finishButton.click();
-    await expect(this.paymentSuccessMessage).toBeVisible();
+      await this.finishButton.click();
 
-    await this.finishButton.click();
+      await expect(this.paymentSuccessMessage).toBeVisible();
   }
 }

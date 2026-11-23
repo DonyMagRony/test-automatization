@@ -29,7 +29,8 @@ test.describe('Buy a product', () => {
     await checkoutPage.fillAddressAndContinue(loggedInUser.address);
     await checkoutPage.payWithBuyNowPayLater('3');
 
-    await expect(checkoutPage.orderConfirmation).toBeVisible({ timeout: 30_000 });
-    await expect(checkoutPage.orderConfirmation).toContainText('Thanks for your order');
+    await expect(checkoutPage.orderConfirmation).toBeVisible();
+    await expect(checkoutPage.orderConfirmation)
+        .toContainText('Thanks for your order');
   });
 });
