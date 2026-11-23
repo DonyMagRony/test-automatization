@@ -56,7 +56,6 @@ export class CheckoutPage extends BasePage {
       await this.installments.selectOption(monthlyInstallments);
 
       await this.finishButton.click();
-
       await expect(this.paymentSuccessMessage).toBeVisible();
   }
 }
