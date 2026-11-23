@@ -26,7 +26,7 @@
 | Configuration | Total run time | Run tests step (slowest shard) | Run |
 |---|---|---|---|
 | 1 shard | 1m 20s| 1m  | [run](https://github.com/DonyMagRony/test-automatization/actions/runs/45279032512/job/138058289503) |
-| 4 shards + merge | 4m 35s | 4m 19s | [run]([LINK](https://github.com/DonyMagRony/test-automatization/actions/runs/45281585913)) |
+| 4 shards + merge | 4m 35s | 4m 19s | [run]([LINK](https://github.com/DonyMagRony/test-automatization/actions/runs/45281585913) |
 
 **Conclusion:** 4 shards were completed by single host machine but every shard required addtional processes of prepartion which caused increased time
 
