@@ -31,7 +31,7 @@ export function newUser(): User {
     phone: '11111111',
     email: uniqueEmail(),
     // 8+ chars, upper + lower case, digit and symbol (site password policy)
-    password: process.env.TEST_PASSWORD ?? '',
+    password: 'TestPassword!1',
     address: {
       street: 'Abay Avenue',
       city: 'Almaty',
