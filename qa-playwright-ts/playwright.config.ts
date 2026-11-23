@@ -1,4 +1,5 @@
-﻿import 'dotenv/config';
+﻿
+import 'dotenv/config';
 import { defineConfig, devices } from '@playwright/test';
 
 const isCI = !!process.env.CI;
@@ -7,10 +8,12 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: isCI,
-  retries: isCI ? 2 ,
-  workers: isCI ? 1 ,
+  retries: 2,
+  workers: 1,
   timeout: 60_000,
-  expect: { timeout: 10_000 },
+  expect: {
+    timeout: 10_000,
+  },
 
   reporter: isCI
     ? [['list'], ['blob'], ['junit', { outputFile: 'reports/junit.xml' }]]
@@ -24,5 +27,10 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
 });
