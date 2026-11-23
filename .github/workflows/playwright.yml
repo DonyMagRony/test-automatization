@@ -38,8 +38,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shardIndex: [1]
-        shardTotal: [1]
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
 
     env:
       BASE_URL: ${{ vars.BASE_URL || 'https://practicesoftwaretesting.com' }}

@@ -25,10 +25,8 @@
 
 | Configuration | Total run time | Run tests step (slowest shard) | Run |
 |---|---|---|---|
-| 1 shard | To be measured | To be measured | [run](LINK) |
+| 1 shard | 1m 20s| 1m  | [run](https://github.com/DonyMagRony/test-automatization/actions/runs/45279032512/job/138058289503) |
 | 4 shards + merge | To be measured | To be measured | [run](LINK) |
-
-Median of 3 runs via `workflow_dispatch`.
 
 **Conclusion:** To be completed after measuring both configurations.
 
