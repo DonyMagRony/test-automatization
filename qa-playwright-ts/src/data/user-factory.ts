@@ -1,4 +1,4 @@
-export interface Address {
+﻿export interface Address {
   street: string;
   city: string;
   state: string;
@@ -31,7 +31,7 @@ export function newUser(): User {
     phone: '11111111',
     email: uniqueEmail(),
     // 8+ chars, upper + lower case, digit and symbol (site password policy)
-    password: 'TestPassword!1',
+    password: process.env.TEST_PASSWORD ?? '',
     address: {
       street: 'Abay Avenue',
       city: 'Almaty',
